@@ -1,0 +1,23 @@
+FROM python:3-alpine
+
+ARG DCOS_E2E_VERSION=2018.12.10.0
+
+RUN apk add --no-cache --virtual .build \
+        git \
+        gcc \
+        libc-dev \
+        libffi-dev \
+        libressl-dev \
+        make \
+ && apk add --no-cache \
+        bash \
+        jq \
+        docker \
+        openssh-client \
+        sed \
+ && git -c advice.detachedHead=false \
+        clone --quiet --depth 1 --branch "${DCOS_E2E_VERSION}" \
+        https://github.com/dcos/dcos-e2e.git /usr/src/dcos-e2e \
+ && pip3 install /usr/src/dcos-e2e \
+ && rm -fr /usr/src/dcos-e2e \
+ && apk del --purge .build

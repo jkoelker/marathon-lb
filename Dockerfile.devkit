@@ -1,0 +1,31 @@
+FROM debian:buster
+
+ENV LANG=C.UTF-8
+
+RUN set -x \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        docker.io \
+        gcc \
+        git \
+        jq \
+        libcurl4-openssl-dev \
+        libssl-dev \
+        python3-dev \
+        python3-pip \
+        python3-setuptools
+
+ADD requirements-dev.txt /marathon-lb/requirements-dev.txt
+
+RUN set -x \
+    && pip3 install \
+        --no-cache \
+        --upgrade \
+        --force-reinstall \
+        -r /marathon-lb/requirements-dev.txt
+
+ADD . /marathon-lb
+WORKDIR /marathon-lb
+
+CMD ["/bin/bash"]
